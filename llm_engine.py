@@ -1,11 +1,9 @@
 import os
 import streamlit as st
-from google import genai
-from google.genai import errors
 
 def generate_content(prompt: str, system_instruction: str = None) -> str:
     """
-    Fungsi universal untuk menghasilkan konten menggunakan Google GenAI SDK terbaru.
+    Fungsi universal dengan proteksi ganda (fallback SDK) untuk menghindari error import.
     """
     api_key = None
     try:
@@ -22,9 +20,12 @@ def generate_content(prompt: str, system_instruction: str = None) -> str:
     if not api_key:
         return "⚠️ Error: API Key Gemini belum dikonfigurasi di Streamlit Secrets."
 
+    # Coba gunakan SDK google-genai terbaru
     try:
-        client = genai.Client(api_key=api_key)
+        from google import genai
+        from google.genai import errors
         
+        client = genai.Client(api_key=api_key)
         config = None
         if system_instruction:
             from google.genai import types
@@ -38,10 +39,35 @@ def generate_content(prompt: str, system_instruction: str = None) -> str:
             contents=prompt,
             config=config
         )
-        
         return response.text
         
-    except errors.APIError as e:
-        return f"⚠️ Terjadi kesalahan pada sistem AI (API Error): {e}"
+    except ImportError:
+        pass # Lanjut ke fallback jika google-genai tidak ada
     except Exception as e:
-        return f"⚠️ Terjadi kesalahan sistem: {str(e)}"
+        # Jika gagal dengan SDK baru, coba fallback ke google.generativeai lama
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=api_key)
+            
+            full_prompt = prompt
+            if system_instruction:
+                full_prompt = f"[INSTRUKSI SISTEM]:\n{system_instruction}\n\n[PROMPT]:\n{prompt}"
+                
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(full_prompt)
+            return response.text
+        except Exception as e_old:
+            return f"⚠️ Terjadi kesalahan pada sistem AI: {e_old}"
+
+    # Fallback permanen jika block di atas tembus
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        full_prompt = prompt
+        if system_instruction:
+            full_prompt = f"[INSTRUKSI SISTEM]:\n{system_instruction}\n\n[PROMPT]:\n{prompt}"
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(full_prompt)
+        return response.text
+    except Exception as e2:
+        return f"⚠️ Gagal memuat engine AI: {e2}"
