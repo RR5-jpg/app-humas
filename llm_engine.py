@@ -2,11 +2,14 @@ import google.generativeai as genai
 import streamlit as st
 
 def generate_content(prompt_utama, system_instruction):
-    # Mengambil API key dari secrets
-    api_key = st.secrets["GEMINI_API_KEY"]
+    # Mengambil API key dari secrets Streamlit Cloud
+    api_key = st.secrets.get("GEMINI_API_KEY")
+    if not api_key:
+        return "Error: GEMINI_API_KEY belum diatur di Streamlit Secrets."
+        
     genai.configure(api_key=api_key)
     
-    # Memilih model (flash sangat cepat & ideal untuk teks)
+    # Memilih model
     model = genai.GenerativeModel('gemini-1.5-flash')
     
     full_prompt = f"""
@@ -22,3 +25,4 @@ def generate_content(prompt_utama, system_instruction):
         return response.text
     except Exception as e:
         return f"Terjadi kesalahan pada sistem AI: {e}"
+
