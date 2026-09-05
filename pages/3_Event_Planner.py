@@ -112,41 +112,37 @@ Berdasarkan data input, buatkan RENCANA LENGKAP dalam format Markdown dengan str
 ## 1. 💡 IDE & KONSEP KEGIATAN
 - Berikan 3-5 ide aktivitas utama yang relevan dengan jenis event dan target peserta.
 - Jelaskan singkat mengapa aktivitas tersebut cocok.
-- Jika diminta, sertakan ide games/aktivitas interaktif (misal: quiz kesehatan, spin wheel, photo booth, challenge).
-- Jika ada senam, masukkan dalam alur.
 
 ## 2. 🗓️ RUNDOWN / SUSUNAN ACARA
-Gunakan daftar poin (bullet list) terstruktur per slot waktu, DILARANG menggunakan tabel markdown garis vertikal (|) agar nyaman dibaca di layar HP.
+Gunakan daftar poin (bullet list) terstruktur, DILARANG menggunakan tabel markdown garis vertikal (|).
 Format:
-- **[Waktu]** : **[Nama Kegiatan]** (Durasi menit) — Deskripsi/PIC/Keterangan singkat.
+- **[Waktu]** : **[Nama Kegiatan]** — Deskripsi/PIC/Keterangan singkat.
 
 ## 3. 🚶 ALUR PESERTA (PARTICIPANT JOURNEY)
 Buat alur langkah demi langkah menggunakan numbered list:
 1. Datang & Registrasi...
 2. Skrining Awal...
-dst. Sebutkan estimasi waktu di tiap titik agar efisien.
+dst.
 
 ## 4. 👥 PEMBAGIAN TIM & TUGAS
-Gunakan daftar poin (bullet list) terstruktur, DILARANG menggunakan tabel markdown.
+Gunakan daftar poin terstruktur, DILARANG menggunakan tabel markdown.
 Format:
 - **[Peran / Divisi]** ([Jumlah] orang) : Tugas utama meliputi...
 
 ## 5. 🏥 LOGISTIK — ALAT MEDIS & BAHAN HABIS PAKAI
 Gunakan daftar poin terstruktur dengan kalkulasi jumlah yang realistis (cadangan 15-20%):
-- **[Nama Item]** : [Jumlah] [Satuan] — (Keterangan penggunaan)
+- **[Nama Item]** : [Jumlah] [Satuan] — (Keterangan)
 
 ## 6. 📦 LOGISTIK — NON-MEDIS, PROMOSI & ATK
 Gunakan daftar poin terstruktur:
 - **[Nama Item]** : [Jumlah] [Satuan] — (Keterangan)
 
 ## 7. ⚠️ ANTISIPASI & TIPS LAPANGAN
-- 3-5 poin singkat: potensi masalah dan solusinya (cuaca, kerumunan, kehabisan bahan, dll).
+- 3-5 poin singkat potensi masalah dan solusinya.
 
 ATURAN MUTLAK:
-- Langsung output konten, tanpa basa-basi pembuka.
-- DILARANG KERAS menggunakan karakter garis tegak lurus (|) atau tabel markdown agar tampilan di HP tidak hancur atau pecah.
+- DILARANG KERAS menggunakan karakter garis tegak lurus (|) atau tabel markdown apa pun agar tampilan di HP tidak hancur.
 - Gunakan bahasa Indonesia yang ringkas dan actionable.
-- Angka dan kalkulasi harus realistis sesuai jumlah peserta.
 """
 
             hasil = generate_content(prompt, system_instruction)
