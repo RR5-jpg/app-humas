@@ -6,9 +6,7 @@ from google.genai import errors
 def generate_content(prompt: str, system_instruction: str = None) -> str:
     """
     Fungsi universal untuk menghasilkan konten menggunakan Google GenAI SDK terbaru.
-    Mendukung API Key dari st.secrets atau environment variable.
     """
-    # Ambil API key dari st.secrets atau environment variables
     api_key = None
     try:
         if "GEMINI_API_KEY" in st.secrets:
@@ -22,13 +20,11 @@ def generate_content(prompt: str, system_instruction: str = None) -> str:
         api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
     if not api_key:
-        return "⚠️ Error: API Key Gemini belum dikonfigurasi. Harap set GEMINI_API_KEY di Streamlit Secrets."
+        return "⚠️ Error: API Key Gemini belum dikonfigurasi di Streamlit Secrets."
 
     try:
-        # Inisialisasi client resmi Google GenAI
         client = genai.Client(api_key=api_key)
         
-        # Konfigurasi tambahan jika system_instruction disediakan
         config = None
         if system_instruction:
             from google.genai import types
@@ -37,7 +33,6 @@ def generate_content(prompt: str, system_instruction: str = None) -> str:
                 temperature=0.7,
             )
 
-        # Menggunakan model gemini-2.5-flash yang cepat dan stabil
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=prompt,
