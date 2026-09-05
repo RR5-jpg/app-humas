@@ -9,16 +9,19 @@ def generate_content(prompt_utama, system_instruction):
     genai.configure(api_key=api_key)
     full_prompt = f"[INSTRUKSI SISTEM WAJIB]:\n{system_instruction}\n\n[PERMINTAAN USER]:\n{prompt_utama}"
     
-    # Menggunakan model gemini-1.5-flash dengan format yang didukung penuh API key standar
+    # Cari model yang mendukung generateContent secara otomatis dari akun Anda
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model_terpilih = None
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                model_terpilih = m.name
+                break
+                
+        if not model_terpilih:
+            return "Error: Tidak ada model AI yang tersedia untuk API key ini."
+            
+        model = genai.GenerativeModel(model_terpilih)
         response = model.generate_content(full_prompt)
         return response.text
     except Exception as e:
-        try:
-            # Fallback jika model flash utama menolak
-            model_alt = genai.GenerativeModel('gemini-1.5-pro')
-            response_alt = model_alt.generate_content(full_prompt)
-            return response_alt.text
-        except Exception as err:
-            return f"Terjadi kesalahan pada sistem AI: {err}"
+        return f"Terjadi kesalahan pada sistem AI: {e}"
