@@ -2,27 +2,23 @@ import google.generativeai as genai
 import streamlit as st
 
 def generate_content(prompt_utama, system_instruction):
-    # Mengambil API key dari secrets Streamlit Cloud
     api_key = st.secrets.get("GEMINI_API_KEY")
     if not api_key:
-        return "Error: GEMINI_API_KEY belum diatur di Streamlit Secrets."
+        return "Error: GEMINI_API_KEY belum diatur di Secrets."
         
     genai.configure(api_key=api_key)
     
-    # Memilih model
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    full_prompt = f"[INSTRUKSI SISTEM WAJIB]:\n{system_instruction}\n\n[PERMINTAAN USER]:\n{prompt_utama}"
     
-    full_prompt = f"""
-    [INSTRUKSI SISTEM WAJIB]:
-    {system_instruction}
+    # Otomatis mencoba model dari yang terbaru sampai versi legacy
+    daftar_model = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro', 'gemini-1.0-pro']
     
-    [PERMINTAAN USER]:
-    {prompt_utama}
-    """
-    
-    try:
-        response = model.generate_content(full_prompt)
-        return response.text
-    except Exception as e:
-        return f"Terjadi kesalahan pada sistem AI: {e}"
-
+    for nama_model in daftar_model:
+        try:
+            model = genai.GenerativeModel(nama_model)
+            response = model.generate_content(full_prompt)
+            return response.text
+        except Exception:
+            continue
+            
+    return "Gagal: Token API Anda tidak mendukung model yang tersedia."
